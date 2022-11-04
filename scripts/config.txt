@@ -1,0 +1,40 @@
+# P1 PORT SETTINGS
+#
+serial_port:/dev/ttyUSB0
+#
+# DATA FLOW CONTROL SETTINGS
+#
+event_loop_timeout:1000
+blok_lengte:300
+max_plot_waarden:144
+#
+# GUI SETTINGS
+#
+gui_theme:DarkPurple3
+screen_width:800
+screen_height:480
+number_font:Futura
+number_font_size:108
+#
+# PLOTTING COLORS
+#
+ax_facecolor:white
+ax_ytick_color:black
+ax_fill_pos_color:cornflowerblue
+ax_fill_neg_color:chartreuse
+ax_spine_color:white
+fig_facecolor:white
+ax_line_color:black
+ax_hline_color:black
+plot_line_color:black
+#
+# UITLEZER DEFAULT P1 SETTINGS
+#
+# ser.baudrate = 115200
+# ser.bytesize=serial.EIGHTBITS
+# ser.parity=serial.PARITY_NONE
+# ser.stopbits=serial.STOPBITS_ONE
+# ser.xonxoff=0
+# ser.rtscts=0
+# ser.timeout=20
+# ser.port = port_string
