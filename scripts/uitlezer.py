@@ -46,7 +46,7 @@ class Uitlezer(object):
 		log_file: een verwijzing naar een logbestand waar Uitlezer naartoe kan schrijven
 		in het geval van een fout. Als dit logbestand niet bestaat dan wordt het aangemaakt.
 
-		TODO: mathode __init__ uitbreiden zodat gebruiker object zelf kan configureren 
+		TODO: methode __init__ uitbreiden zodat gebruiker object zelf kan configureren 
 		"""
 		self.event_log = log_file
 		self.ser = serial.Serial()

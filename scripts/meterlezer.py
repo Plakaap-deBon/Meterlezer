@@ -27,10 +27,9 @@ def write_to_log(boodschap, traceback):
 		trace = str(traceback[-1]) + "\n" if traceback is not None else ""
 		h.write("{}  {}\n{}".format(timestamp, boodschap, trace))
 
-"""
-Instanties van de hulpklassen voor uitlezen, plotten en interactie met database.
-Uitlezer krijgt verwijzingen naar juiste seriële poort en het logbestand mee.
-"""
+
+# Instanties van de hulpklassen voor uitlezen, plotten en interactie met database.
+# Uitlezer krijgt verwijzingen naar juiste seriële poort en het logbestand mee.
 lezer = Uitlezer(settings['serial_port'], event_log)
 plotter = Stroomplotter(settings)
 db = StroomDB()
@@ -65,16 +64,17 @@ main_window = sg.Window('Meterlezer', main_layout, location=(0,0),
 main_window.Maximize()
 
 
-"""
-****** MAIN PROGRAM ******
-
-"""
+#
+# ****** MAIN PROGRAM ******
+#
 write_to_log("programma gestart", None)
-plot_window = None # variabele voor plotvenster moet geinitialiseerd zijn buiten de lus.
+
+# variabele voor plotvenster moet geinitialiseerd zijn buiten de lus.
+plot_window = None
 
 # De gui event loop moet een timeout hebben om blokkeren te voorkomen. Omdat bij elke
 # doorgang van de lus de meter uitgelezen wordt en mogelijk naar database geschreven 
-# wordt, moet dit een realistische waarde zijn (in ms). 1000 = 1 sec = 1 uitlezing/sec.
+# wordt, moet dit een realistische waarde zijn (in ms). 1000 = 1 sec ~ 1 uitlezing/sec.
 event_loop_timeout = int(settings['event_loop_timeout'])
 
 # blok_lengte bepaalt hoeveel waarden er in een lijst worden bijgehouden voordat
@@ -82,9 +82,12 @@ event_loop_timeout = int(settings['event_loop_timeout'])
 # In combinatie met event_loop_timeout een manier om de instroom aan gegevens
 # te beinvloeden. Bij een lengte van 0 wordt elke uitlezing weggeschreven.
 blok_lengte = int(settings['blok_lengte'])
-blok = [] # initialiseer blok buiten de lus
 
-max_plot_waarden = int(settings['max_plot_waarden']) # hoeveel rijen er uit db opgehaald worden om te plotten
+# initialiseer blok buiten de lus
+blok = []
+
+# hoeveel rijen er uit db opgehaald worden om te plotten
+max_plot_waarden = int(settings['max_plot_waarden'])
 
 serial_errors = 0
 if __name__ == '__main__':
@@ -93,11 +96,11 @@ if __name__ == '__main__':
 		# check gui voor events
 		window, event, values = sg.read_all_windows(timeout=event_loop_timeout)
 		
-		if event == 'Exit': # event: hoofdvenster gesloten
+		if event == 'Exit':  # event: hoofdvenster gesloten
 			write_to_log("programma afgesloten door gebruiker", None)
 			break
 
-		if event == 'Plot': # event: op knop 'plot' geklikt
+		if event == 'Plot':  # event: op knop 'plot' geklikt
 			plot_layout = [
 			[sg.Text('Verbruik in Watt, gemiddelde per 10 minuten:', key='label', font=('Futura', 24))],
 			[sg.Canvas(size=(420,360), key='-CANVAS-')],
@@ -113,7 +116,7 @@ if __name__ == '__main__':
 			canvas_elem.Size=(int(figure_w),int(figure_h))
 			fig_agg = plotter.teken_figuur(canvas_elem, fig1)
 		
-		if event == 'Exit2': # event: plotvenster gesloten (op 'sluiten' geklikt)
+		if event == 'Exit2':  # event: plotvenster gesloten (op 'sluiten' geklikt)
 			plotter.close()
 			plot_window.close()
 
@@ -130,6 +133,7 @@ if __name__ == '__main__':
 				serial_errors += 1
 				power_tupel = (0,0)
 			else:
+				# bij meer dan 3 fouten met de seriële poort: stoppen (TODO: niet hard coden!)
 				write_to_log("Fouten met seriële poort > 3, programma afgebroken", 
 					traceback.extract_stack())
 				break
