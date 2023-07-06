@@ -16,6 +16,10 @@ screen_height:480
 number_font:Futura
 number_font_size:108
 #
+# ERROR HANDLING
+#
+max_serial_errors:3
+#
 # PLOTTING COLORS
 #
 ax_facecolor:white

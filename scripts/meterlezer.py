@@ -89,7 +89,10 @@ blok = []
 # hoeveel rijen er uit db opgehaald worden om te plotten
 max_plot_waarden = int(settings['max_plot_waarden'])
 
+# hou het aantal exceptions bij openen/sluiten van seriële poort in de gaten
 serial_errors = 0
+max_serial_errors = int(settings['max_serial_errors'])
+
 if __name__ == '__main__':
 	# event loop
 	while True:
@@ -120,21 +123,23 @@ if __name__ == '__main__':
 			plotter.close()
 			plot_window.close()
 
-		# Lees de meter uit. Als lezer er niet in slaagt om de juiste regels te herkennen
-		# in het telegram wordt een MatchNotFoundException opgegooid. Als er wel een 
-		# string gevonden is maar de omzetting naar int mislukt, dan volgt er een 
-		# ConversionException. In beide gevallen wordt de waarde van het tupel op (0,0) gezet 
-		# en een melding in het log gemaakt. Het programma wordt niet afgebroken.
+		# Lees de meter uit. 
+        # Als lezer er niet in slaagt om de juiste regels te herkennen wordt een 
+        # MatchNotFoundException opgegooid. Als er wel een string gevonden is maar de 
+        # omzetting naar int mislukt, dan volgt er een ConversionException. In beide 
+        # gevallen wordt de waarde van het tupel op (0,0) gezet en een melding in het log gemaakt. 
+        # Het programma wordt niet afgebroken, behalve als het aantal fouten met de seriële poort 
+        # boven het maximum uit komt of bij een onverwachte fout.
 		try:
 			power_tupel = lezer.lees_meter_uit()
 		except SerialException as e:
 			write_to_log(str(e), traceback.extract_stack())
-			if serial_errors < 3:
+			if serial_errors < max_serial_errors:
 				serial_errors += 1
 				power_tupel = (0,0)
 			else:
-				# bij meer dan 3 fouten met de seriële poort: stoppen (TODO: niet hard coden!)
-				write_to_log("Fouten met seriële poort > 3, programma afgebroken", 
+				# bij te veel fouten met de seriële poort: stoppen
+				write_to_log("Meer fouten met seriële poort dan toegestaan, programma afgebroken", 
 					traceback.extract_stack())
 				break
 		except MatchNotFoundException as e2:
